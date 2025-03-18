@@ -11,6 +11,8 @@ type BookService interface {
 	AddBook(book models.Book) error
 	GetBooks() []models.Book
 	GetBookByID(id string) (*models.Book, error)
+	UpdateBook(id string, updatedBook models.Book) error
+	DeleteBook(id string) error
 }
 
 // bookService реализация BookService
@@ -38,4 +40,14 @@ func (s *bookService) GetBooks() []models.Book {
 // GetBookByID получить книгу по ID
 func (s *bookService) GetBookByID(id string) (*models.Book, error) {
 	return s.store.GetBookByID(id)
+}
+
+// UpdateBook обновляет книгу
+func (s *bookService) UpdateBook(id string, updatedBook models.Book) error {
+	return s.store.UpdateBook(id, updatedBook)
+}
+
+// DeleteBook удаляет книгу
+func (s *bookService) DeleteBook(id string) error {
+	return s.store.DeleteBook(id)
 }

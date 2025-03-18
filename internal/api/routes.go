@@ -15,4 +15,6 @@ func SetupRoutes(e *echo.Echo, bookService service.BookService) {
 	e.POST("/books", bookHandler.CreateBook)
 	e.GET("/books", bookHandler.GetBooks)
 	e.GET("/books/:id", bookHandler.GetBookByID)
+	e.PUT("/books/:id", bookHandler.UpdateBook)
+	e.DELETE("/books/:id", bookHandler.DeleteBook)
 }

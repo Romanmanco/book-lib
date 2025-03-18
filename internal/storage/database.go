@@ -12,6 +12,8 @@ type BookStore interface {
 	AddBook(book models.Book) error
 	GetBooks() []models.Book
 	GetBookByID(id string) (*models.Book, error)
+	UpdateBook(id string, updatedBook models.Book) error
+	DeleteBook(id string) error
 }
 
 // BookStorage структура для хранения книг в памяти
@@ -62,4 +64,28 @@ func (s *BookStorage) GetBookByID(id string) (*models.Book, error) {
 		return nil, errors.New("book not found")
 	}
 	return &book, nil
+}
+
+// UpdateBook обновляет данные книги по ID
+func (s *BookStorage) UpdateBook(id string, updatedBook models.Book) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if _, exists := s.books[id]; !exists {
+		return errors.New("book not found")
+	}
+	s.books[id] = updatedBook
+	return nil
+}
+
+// DeleteBook удаление книги по ID
+func (s *BookStorage) DeleteBook(id string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if _, exists := s.books[id]; !exists {
+		return errors.New("book not found")
+	}
+	delete(s.books, id)
+	return nil
 }

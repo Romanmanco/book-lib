@@ -49,3 +49,28 @@ func (h *BookHandler) GetBookByID(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, book)
 }
+
+// UpdateBook обновление данных книги
+func (h *BookHandler) UpdateBook(c echo.Context) error {
+	id := c.Param("id")
+	var book models.Book
+	if err := c.Bind(&book); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	err := h.service.UpdateBook(id, book)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, book)
+}
+
+// DeleteBook удаление книги
+func (h *BookHandler) DeleteBook(c echo.Context) error {
+	id := c.Param("id")
+	err := h.service.DeleteBook(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.NoContent(http.StatusNoContent)
+}
