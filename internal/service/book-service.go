@@ -1,4 +1,3 @@
-// Package service Author: Роман Манько [@speakerkiller]
 package service
 
 import (
@@ -9,7 +8,7 @@ import (
 // BookService интерфейс для работы с книгами
 type BookService interface {
 	AddBook(book models.Book) error
-	GetBooks() []models.Book
+	GetBooks() ([]models.Book, error)
 	GetBookByID(id string) (*models.Book, error)
 	UpdateBook(id string, updatedBook models.Book) error
 	DeleteBook(id string) error
@@ -33,7 +32,7 @@ func (s *bookService) AddBook(book models.Book) error {
 }
 
 // GetBooks все книги
-func (s *bookService) GetBooks() []models.Book {
+func (s *bookService) GetBooks() ([]models.Book, error) {
 	return s.store.GetBooks()
 }
 

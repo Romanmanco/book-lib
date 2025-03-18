@@ -36,7 +36,10 @@ func (h *BookHandler) CreateBook(c echo.Context) error {
 
 // GetBooks получение списка книг
 func (h *BookHandler) GetBooks(c echo.Context) error {
-	books := h.service.GetBooks()
+	books, err := h.service.GetBooks()
+	if err != nil {
+		return c.JSON(http.StatusNotFound, err.Error())
+	}
 	return c.JSON(http.StatusOK, books)
 }
 

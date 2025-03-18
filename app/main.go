@@ -2,22 +2,39 @@
 package main
 
 import (
+	"book-lib/config"
 	"book-lib/internal/api"
 	"book-lib/internal/service"
 	"book-lib/internal/storage"
 	"github.com/labstack/echo/v4"
+	"log"
 )
 
 func main() {
+	// Переменные окружения из .env
+	config.LoadEnv()
+
+	// Инициализация бд
+	db, err := storage.ConnectDB()
+	if err != nil {
+		log.Fatalf("Ошибка подключения к БД: %v", err)
+	}
+
+	// Миграции
+	storage.RunMigrations(db)
+
 	e := echo.New()
 
-	// хранилище и сервис для работы с книгами
-	store := storage.NewBookStorage()
-	bookService := service.NewBookService(store)
+	// Сервис работы с книгами
+	bookService := service.NewBookService(storage.NewBookStorage(db))
 
-	// маршруты
+	// Маршруты
 	api.SetupRoutes(e, bookService)
 
-	// запуск сервера
-	e.Logger.Fatal(e.Start(":8080"))
+	// Запуск сервера
+	port := config.GetEnv("PORT", "8080")
+	log.Printf("Сервер запущен на :%s", port)
+	if err := e.Start(":" + port); err != nil {
+		log.Fatalf("Ошибка запуска сервера: %v", err)
+	}
 }
