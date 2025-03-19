@@ -2,15 +2,16 @@
 package config
 
 import (
+	"book-lib/logger"
 	"github.com/joho/godotenv"
-	"github.com/labstack/gommon/log"
 	"os"
 )
 
 // LoadEnv загружает переменные окружения из .env файла
 func LoadEnv() {
+	logger.Debug("Загрузка переменных окружения...")
 	if err := godotenv.Load("config/.env"); err != nil {
-		log.Error("Не удалось загрузить .env, используются стандартные переменные окружения...")
+		logger.Error("Не удалось загрузить .env, используются стандартные переменные окружения...")
 	}
 }
 
