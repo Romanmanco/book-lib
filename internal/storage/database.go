@@ -46,9 +46,9 @@ func RunMigrations(db *gorm.DB) {
 type BookStore interface {
 	AddBook(book models.Book) error
 	GetBooks() ([]models.Book, error)
-	GetBookByID(id string) (*models.Book, error)
-	UpdateBook(id string, updatedBook models.Book) error
-	DeleteBook(id string) error
+	GetBookByID(id int64) (*models.Book, error)
+	UpdateBook(id int64, updatedBook models.Book) error
+	DeleteBook(id int64) error
 }
 
 // BookStorage структура для хранения книг в памяти
@@ -64,28 +64,35 @@ func NewBookStorage(db *gorm.DB) *BookStorage {
 // AddBook добавить книгу
 func (s *BookStorage) AddBook(book models.Book) error {
 	logger.Info("Добавление книги:", book.Title)
+
 	if err := s.db.Create(&book).Error; err != nil {
 		logger.Error("Ошибка добавления книги:", err)
 		return fmt.Errorf("failed to add book: %w", err)
 	}
+
+	logger.Info("Книга добавлена, ID:", book.ID)
+
 	return nil
 }
 
 // GetBooks получить все книги
 func (s *BookStorage) GetBooks() ([]models.Book, error) {
 	logger.Debug("Запрос на получение всех книг")
+
 	var books []models.Book
 	if err := s.db.Find(&books).Error; err != nil {
 		logger.Error("Ошибка получения книг:", err)
 		return nil, fmt.Errorf("failed to get books: %w", err)
 	}
+
 	logger.Info("Найдено книг:", len(books))
 	return books, nil
 }
 
 // GetBookByID получит книгу по ID
-func (s *BookStorage) GetBookByID(id string) (*models.Book, error) {
+func (s *BookStorage) GetBookByID(id int64) (*models.Book, error) {
 	logger.Debug("Запрос на получение книги с ID:", id)
+
 	var book models.Book
 	if err := s.db.First(&book, "id = ?", id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -95,12 +102,14 @@ func (s *BookStorage) GetBookByID(id string) (*models.Book, error) {
 		logger.Error("Ошибка при получении книги:", err)
 		return nil, fmt.Errorf("failed to get book by ID: %w", err)
 	}
+
 	return &book, nil
 }
 
 // UpdateBook обновляет данные книги по ID
-func (s *BookStorage) UpdateBook(id string, updatedBook models.Book) error {
+func (s *BookStorage) UpdateBook(id int64, updatedBook models.Book) error {
 	logger.Debug("Обновление книги с ID:", id)
+
 	var book models.Book
 	if err := s.db.First(&book, "id = ?", id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -114,17 +123,20 @@ func (s *BookStorage) UpdateBook(id string, updatedBook models.Book) error {
 		logger.Error("Ошибка обновления книги:", err)
 		return fmt.Errorf("failed to update book: %w", err)
 	}
+
 	logger.Info("Книга с ID", id, "успешно обновлена.")
 	return nil
 }
 
 // DeleteBook удаление книги по ID
-func (s *BookStorage) DeleteBook(id string) error {
+func (s *BookStorage) DeleteBook(id int64) error {
 	logger.Debug("Удаление книги с ID:", id)
+
 	if err := s.db.Delete(&models.Book{}, "id = ?", id).Error; err != nil {
 		logger.Error("Ошибка удаления книги:", err)
 		return fmt.Errorf("failed to delete book: %w", err)
 	}
+
 	logger.Info("Книга с ID", id, "успешно удалена.")
 	return nil
 }

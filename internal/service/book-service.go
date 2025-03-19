@@ -9,9 +9,9 @@ import (
 type BookService interface {
 	AddBook(book models.Book) error
 	GetBooks() ([]models.Book, error)
-	GetBookByID(id string) (*models.Book, error)
-	UpdateBook(id string, updatedBook models.Book) error
-	DeleteBook(id string) error
+	GetBookByID(id int64) (*models.Book, error)
+	UpdateBook(id int64, updatedBook models.Book) error
+	DeleteBook(id int64) error
 }
 
 // bookService реализация BookService
@@ -37,16 +37,16 @@ func (s *bookService) GetBooks() ([]models.Book, error) {
 }
 
 // GetBookByID получить книгу по ID
-func (s *bookService) GetBookByID(id string) (*models.Book, error) {
+func (s *bookService) GetBookByID(id int64) (*models.Book, error) {
 	return s.store.GetBookByID(id)
 }
 
 // UpdateBook обновляет книгу
-func (s *bookService) UpdateBook(id string, updatedBook models.Book) error {
+func (s *bookService) UpdateBook(id int64, updatedBook models.Book) error {
 	return s.store.UpdateBook(id, updatedBook)
 }
 
 // DeleteBook удаляет книгу
-func (s *bookService) DeleteBook(id string) error {
+func (s *bookService) DeleteBook(id int64) error {
 	return s.store.DeleteBook(id)
 }
