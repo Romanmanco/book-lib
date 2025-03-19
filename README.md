@@ -12,7 +12,7 @@
 ## Проверка развернутого сваггера
 - http://localhost:8080/swagger/index.html
 
-## Пример подключения к базам данных: docs/database.md
+## Пример подключения к базам данных: database.md
 
 ## Запуск тестов хендлеров: go test ./internal/handlers
 ## Запуск тестов для бд: go test ./internal/storage
